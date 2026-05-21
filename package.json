@@ -9,7 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.106.0",
+    "@zxing/browser": "^0.1.4",
+    "@zxing/library": "^0.20.0",
+    "framer-motion": "^12.39.0",
+    "nanoid": "^5.1.11",
     "next": "16.2.6",
+    "qrcode.react": "^4.2.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },

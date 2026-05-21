@@ -1,26 +1,142 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Great+Vibes&family=Inter:wght@300;400;500;600&display=swap");
 @import "tailwindcss";
 
+@theme {
+  /* Colors - Maroon */
+  --color-maroon-50: #fdf2f2;
+  --color-maroon-100: #fce0e0;
+  --color-maroon-200: #f9bfbf;
+  --color-maroon-300: #f48f8f;
+  --color-maroon-400: #ec5555;
+  --color-maroon-500: #df2a2a;
+  --color-maroon-600: #be1a1a;
+  --color-maroon-700: #991515;
+  --color-maroon-800: #7a1414;
+  --color-maroon-900: #5c1010;
+  --color-maroon-950: #3d0808;
+  --color-maroon: #7a1414;
+
+  /* Colors - Gold */
+  --color-gold-50: #fffdf0;
+  --color-gold-100: #fff9d6;
+  --color-gold-200: #fff1a8;
+  --color-gold-300: #ffe570;
+  --color-gold-400: #ffd43a;
+  --color-gold-500: #f5c518;
+  --color-gold-600: #d4a40e;
+  --color-gold-700: #b8860b;
+  --color-gold-800: #9a6f0d;
+  --color-gold-900: #7d5a0f;
+  --color-gold: #d4a40e;
+
+  /* Colors - Cream */
+  --color-cream-50: #fdfbf5;
+  --color-cream-100: #faf5e8;
+  --color-cream-200: #f5ead1;
+  --color-cream-300: #eed9b0;
+  --color-cream-400: #e5c484;
+  --color-cream: #faf5e8;
+
+  /* Font Family */
+  --font-family-serif: var(--font-cormorant), Georgia, serif;
+  --font-family-sans: var(--font-inter), system-ui, sans-serif;
+  --font-family-script: var(--font-great-vibes), cursive;
+
+  /* Background Image */
+  --background-image-batik-pattern: url("/images/batik-bg.png");
+
+  /* Animations */
+  --animate-fade-in: fadeIn 1.2s ease-in-out forwards;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s linear infinite;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-cormorant: "Cormorant Garamond", Georgia, serif;
+  --font-great-vibes: "Great Vibes", cursive;
+  --font-inter: "Inter", system-ui, sans-serif;
+
+  --color-black: #1a0a0a;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-black);
+  color: var(--color-cream);
+  font-family: var(--font-inter);
+  overflow-x: hidden;
+}
+
+/* Scrollbar kustom */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-black);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-gold);
+  border-radius: 3px;
+}
+
+/* Utility class gold text shimmer */
+.gold-shimmer {
+  background: linear-gradient(
+    90deg,
+    #d4a40e 0%,
+    #f5c518 25%,
+    #ffe570 50%,
+    #f5c518 75%,
+    #d4a40e 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Gold border dekoratif */
+.border-gold-ornament {
+  border: 1px solid rgba(212, 164, 14, 0.4);
+  box-shadow: inset 0 0 30px rgba(212, 164, 14, 0.05);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
