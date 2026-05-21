@@ -10,6 +10,8 @@ import CountdownSection from "@/components/sections/CountdownSection";
 import LoveStorySection from "@/components/sections/LoveStorySection";
 import EventSection from "@/components/sections/EventSection";
 import GallerySection from "@/components/sections/GallerySection";
+import RsvpSection from "@/components/sections/RsvpSection";
+import GuestbookSection from "@/components/sections/GuestbookSection";
 import MusicToggle from "@/components/ui/MusicToggle";
 
 interface Props {
@@ -44,12 +46,24 @@ export default function InvitationClient({ guest }: Props) {
             <LoveStorySection />
             <EventSection />
             <GallerySection />
-            {/* Week 3: RsvpSection & GuestbookSection ditambahkan di sini */}
+            <RsvpSection guest={guest} />
+            <GuestbookSection />
+
+            {/* Footer */}
+            <footer className="py-10 px-6 bg-[#1a0a0a] text-center border-t border-gold-700/10">
+              <p className="text-gold-500/50 text-xs uppercase tracking-widest font-sans mb-2">
+                Rizky &amp; Amira · 14 Juni 2025
+              </p>
+              <p className="text-cream-200/25 text-xs font-serif italic">
+                Atas kehadiran dan doa restunya, kami ucapkan terima kasih.
+                <br />
+                <span className="text-gold-400/40">Matur nuwun.</span>
+              </p>
+            </footer>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Music toggle selalu tampil */}
       {isOpen && <MusicToggle />}
     </>
   );

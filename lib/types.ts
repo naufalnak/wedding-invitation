@@ -16,3 +16,7 @@ export type Rsvp = {
   created_at: string;
   guests?: Guest;
 };
+
+export type RsvpWithGuest = Rsvp & {
+  guests: Pick<Guest, "name" | "max_guest">;
+};
