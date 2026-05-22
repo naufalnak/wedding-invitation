@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { QRCodeSVG } from "qrcode.react";
+import { QRCodeCanvas } from "qrcode.react";
 
 interface Props {
   token: string;
@@ -9,22 +9,37 @@ interface Props {
 }
 
 export default function QrCodeDisplay({ token, guestName }: Props) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = () => {
-    const svg = containerRef.current?.querySelector("svg");
-    if (!svg) return;
+    // QRCodeCanvas render <canvas> di dalam div
+    const canvas = canvasRef.current?.querySelector("canvas");
+    if (!canvas) return;
 
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const svgBlob = new Blob([svgData], {
-      type: "image/svg+xml;charset=utf-8",
-    });
-    const url = URL.createObjectURL(svgBlob);
+    // Buat canvas baru dengan padding & background putih
+    const padding = 24;
+    const size = canvas.width;
+    const total = size + padding * 2;
+
+    const out = document.createElement("canvas");
+    out.width = total;
+    out.height = total;
+
+    const ctx = out.getContext("2d");
+    if (!ctx) return;
+
+    // Background putih
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, total, total);
+
+    // Tempel QR di tengah
+    ctx.drawImage(canvas, padding, padding, size, size);
+
+    // Download
     const link = document.createElement("a");
-    link.href = url;
-    link.download = `qr-undangan-${guestName.toLowerCase().replace(/\s+/g, "-")}.svg`;
+    link.download = `qr-undangan-${guestName.toLowerCase().replace(/\s+/g, "-")}.png`;
+    link.href = out.toDataURL("image/png");
     link.click();
-    URL.revokeObjectURL(url);
   };
 
   return (
@@ -33,11 +48,11 @@ export default function QrCodeDisplay({ token, guestName }: Props) {
         QR Code Check-in Anda
       </p>
 
-      {/* QR dengan border emas */}
+      {/* Pakai QRCodeCanvas bukan QRCodeSVG */}
       <div
-        ref={containerRef}
+        ref={canvasRef}
         className="p-4 bg-white rounded-sm border-2 border-gold-600/40">
-        <QRCodeSVG
+        <QRCodeCanvas
           value={token}
           size={180}
           bgColor="#ffffff"
@@ -74,7 +89,7 @@ export default function QrCodeDisplay({ token, guestName }: Props) {
           <polyline points="7 10 12 15 17 10" />
           <line x1="12" y1="15" x2="12" y2="3" />
         </svg>
-        Unduh QR Code
+        Unduh QR Code (PNG)
       </button>
     </div>
   );
