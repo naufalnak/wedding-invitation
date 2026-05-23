@@ -67,6 +67,11 @@ export default function CheckinPage() {
     processingRef.current = false;
   }, []);
 
+  const handleLogout = async () => {
+    await fetch("/api/checkin/auth", { method: "DELETE" });
+    window.location.href = "/checkin/login";
+  };
+
   const reset = () => {
     setResult(null);
     setScanState("idle");
@@ -84,9 +89,18 @@ export default function CheckinPage() {
       <div className="max-w-sm mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-3">
-          <p className="text-gold-500/70 text-xs uppercase tracking-[0.4em] font-sans">
-            Panitia Acara
-          </p>
+          <div className="flex items-center justify-between mb-1">
+            <div /> {/* spacer */}
+            <p className="text-gold-500/70 text-xs uppercase tracking-[0.4em] font-sans flex-1 text-center">
+              Panitia Acara
+            </p>
+            <button
+              onClick={handleLogout}
+              className="text-cream-200/25 hover:text-cream-200/50 text-xs font-sans transition-colors"
+              title="Keluar">
+              Keluar
+            </button>
+          </div>
           <GoldDivider />
           <h1 className="font-serif text-3xl text-cream-100">Check-in Tamu</h1>
           <p className="text-cream-200/40 font-sans text-xs">
