@@ -1,3 +1,4 @@
+// lib/types.ts
 export type Guest = {
   id: string;
   name: string;

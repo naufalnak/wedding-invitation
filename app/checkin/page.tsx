@@ -45,7 +45,7 @@ export default function CheckinPage() {
       return;
     }
 
-    const guestName = (rsvp.guests as { name?: string } | null)?.name ?? "Tamu";
+    const guestName = rsvp.guests?.name ?? "Tamu";
 
     if (rsvp.checked_in) {
       setResult({ rsvp, guestName, alreadyCheckedIn: true });
