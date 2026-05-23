@@ -12,7 +12,6 @@ export async function submitRsvp({
   guestCount: number;
   message: string;
 }): Promise<{ data: Rsvp | null; error: string | null }> {
-  // Cek apakah tamu sudah pernah RSVP
   const { data: existing } = await supabase
     .from("rsvps")
     .select("id, qr_token")
@@ -99,4 +98,30 @@ export async function checkInRsvp(
 
   if (error) return { success: false, error: error.message };
   return { success: true, error: null };
+}
+
+// ── Ambil foto galeri dari Supabase ──────────────────────────
+export async function getGalleryPhotos(): Promise<
+  { url: string; caption: string; alt: string }[]
+> {
+  // Ambil metadata dari tabel gallery
+  const { data, error } = await supabase
+    .from("gallery")
+    .select("filename, caption, alt_text")
+    .order("sort_order", { ascending: true });
+
+  if (error || !data) return [];
+
+  // Generate public URL dari Supabase Storage
+  return data.map((row) => {
+    const { data: urlData } = supabase.storage
+      .from("gallery")
+      .getPublicUrl(row.filename);
+
+    return {
+      url: urlData.publicUrl,
+      caption: row.caption ?? "",
+      alt: row.alt_text,
+    };
+  });
 }
