@@ -1,13 +1,7 @@
 import { ImageResponse } from "@vercel/og";
-import { supabase } from "@/lib/supabaseClient";
 
 export const runtime = "edge";
-
-export const size = {
-  width: 1200,
-  height: 630,
-};
-
+export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 interface Props {
@@ -15,14 +9,29 @@ interface Props {
 }
 
 export default async function OgImage({ params }: Props) {
-  // Fetch nama tamu dari Supabase
-  const { data: guest } = await supabase
-    .from("guests")
-    .select("name")
-    .eq("slug", params.slug)
-    .single();
+  // ── Fetch langsung via REST, tidak pakai supabase client ──
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-  const guestName = guest?.name ?? "Tamu Undangan";
+  let guestName = "Tamu Undangan";
+
+  try {
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/guests?slug=eq.${params.slug}&select=name&limit=1`,
+      {
+        headers: {
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+        },
+        cache: "no-store",
+      },
+    );
+    const rows = await res.json();
+    if (rows?.[0]?.name) guestName = rows[0].name;
+  } catch {
+    // fallback ke default
+  }
+
   const brideGroom = "Rizky & Amira";
   const weddingDate = "Sabtu, 14 Juni 2025";
   const location = "Surabaya, Jawa Timur";
@@ -41,7 +50,7 @@ export default async function OgImage({ params }: Props) {
         position: "relative",
         overflow: "hidden",
       }}>
-      {/* Background — lingkaran dekoratif */}
+      {/* Lingkaran dekoratif */}
       <div
         style={{
           position: "absolute",
@@ -65,7 +74,7 @@ export default async function OgImage({ params }: Props) {
         }}
       />
 
-      {/* Garis emas atas */}
+      {/* Garis emas atas & bawah */}
       <div
         style={{
           position: "absolute",
@@ -77,8 +86,6 @@ export default async function OgImage({ params }: Props) {
             "linear-gradient(90deg, transparent, #d4a40e, transparent)",
         }}
       />
-
-      {/* Garis emas bawah */}
       <div
         style={{
           position: "absolute",
@@ -91,26 +98,22 @@ export default async function OgImage({ params }: Props) {
         }}
       />
 
-      {/* Sudut kiri atas */}
-      <CornerOrnament top={24} left={24} />
-      {/* Sudut kanan atas */}
+      {/* Sudut ornamen */}
+      <CornerOrnament top={24} left={24} rotate={0} />
       <CornerOrnament top={24} right={24} rotate={90} />
-      {/* Sudut kiri bawah */}
       <CornerOrnament bottom={24} left={24} rotate={270} />
-      {/* Sudut kanan bawah */}
       <CornerOrnament bottom={24} right={24} rotate={180} />
 
-      {/* Konten utama */}
+      {/* Konten */}
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: "0px",
-          padding: "0 80px",
           textAlign: "center",
+          padding: "0 80px",
+          gap: "0px",
         }}>
-        {/* Label undangan */}
         <p
           style={{
             color: "rgba(212,164,14,0.7)",
@@ -123,7 +126,7 @@ export default async function OgImage({ params }: Props) {
           Undangan Pernikahan
         </p>
 
-        {/* Divider emas */}
+        {/* Divider */}
         <div
           style={{
             display: "flex",
@@ -142,8 +145,8 @@ export default async function OgImage({ params }: Props) {
             style={{
               width: "6px",
               height: "6px",
-              background: "#d4a40e",
               borderRadius: "50%",
+              background: "#d4a40e",
               opacity: 0.7,
             }}
           />
@@ -156,7 +159,6 @@ export default async function OgImage({ params }: Props) {
           />
         </div>
 
-        {/* Kepada */}
         <p
           style={{
             color: "rgba(250,245,232,0.6)",
@@ -167,7 +169,6 @@ export default async function OgImage({ params }: Props) {
           Kepada Yth.
         </p>
 
-        {/* Nama tamu — besar */}
         <p
           style={{
             color: "#d4a40e",
@@ -189,7 +190,7 @@ export default async function OgImage({ params }: Props) {
           &amp; Keluarga
         </p>
 
-        {/* Divider */}
+        {/* Divider diamond */}
         <div
           style={{
             display: "flex",
@@ -222,7 +223,6 @@ export default async function OgImage({ params }: Props) {
           />
         </div>
 
-        {/* Nama pasangan */}
         <p
           style={{
             color: "rgba(250,245,232,0.95)",
@@ -234,7 +234,6 @@ export default async function OgImage({ params }: Props) {
           {brideGroom}
         </p>
 
-        {/* Tanggal & lokasi */}
         <p
           style={{
             color: "rgba(250,245,232,0.45)",
@@ -247,7 +246,6 @@ export default async function OgImage({ params }: Props) {
         </p>
       </div>
 
-      {/* Label "Sugeng Rawuh" pojok bawah */}
       <p
         style={{
           position: "absolute",
@@ -262,13 +260,10 @@ export default async function OgImage({ params }: Props) {
         Sugeng rawuh
       </p>
     </div>,
-    {
-      ...size,
-    },
+    { ...size },
   );
 }
 
-// Komponen ornamen sudut — pakai plain object style karena ImageResponse
 function CornerOrnament({
   top,
   left,
@@ -295,7 +290,6 @@ function CornerOrnament({
         transform: `rotate(${rotate}deg)`,
         opacity: 0.45,
       }}>
-      {/* Garis vertikal */}
       <div
         style={{
           position: "absolute",
@@ -306,7 +300,6 @@ function CornerOrnament({
           backgroundColor: "#d4a40e",
         }}
       />
-      {/* Garis horizontal */}
       <div
         style={{
           position: "absolute",
@@ -317,7 +310,6 @@ function CornerOrnament({
           backgroundColor: "#d4a40e",
         }}
       />
-      {/* Titik sudut */}
       <div
         style={{
           position: "absolute",
